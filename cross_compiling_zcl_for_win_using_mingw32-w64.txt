@@ -1,0 +1,30 @@
+OS: ubuntu16.04
+1. sudo apt-get install mingw-w64
+It will install x86_64-w64-mingw32-gcc with two version thread models: posix and win32.
+/usr/bin/x86_64-w64-mingw32-gcc-win32
+/usr/bin/x86_64-w64-mingw32-gcc-posix
+/usr/bin/x86_64-w64-mingw32-g++-win32
+/usr/bin/x86_64-w64-mingw32-g++-posix
+
+execute the following commands to make sure the posix model was selected:
+sudo update-alternatives --config x86_64-w64-mingw32-gcc
+sudo update-alternatives --config x86_64-w64-mingw32-g++
+
+2. install rust
+curl https://sh.rustup.rs -sSf | sh
+source ~/.cargo/env
+rustup install stable-x86_64-unknown-linux-gnu
+rustup install stable-x86_64-pc-windows-gnu
+rustup target add x86_64-pc-windows-gnu
+vi  ~/.cargo/config, add:
+[target.x86_64-pc-windows-gnu]
+linker = "/usr/bin/x86_64-w64-mingw32-gcc"
+
+3. patch the source tree (created by git format-patch -M master)
+0001-update-rust.mk-and-librustzcash.mk-now-compiling-for.patch
+
+4. compile for win
+(1) source ~/.cargo/env
+(2) ./zcutil/build-win.sh
+
+We will get zcashd.exe zcash-cli.exe in src directory
